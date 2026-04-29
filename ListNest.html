@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>List-Nest</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#1D9E75;--gl:#E1F5EE;--gd:#0F6E56;--gm:#5DCAA5;
+  --amber:#BA7517;--al:#FAEEDA;
+  --coral:#D85A30;--cl:#FAECE7;
+  --purple:#534AB7;--pl:#EEEDFE;
+  --blue:#378ADD;--bl:#E6F1FB;
+  --red:#E24B4A;--rl:#FCEBEB;
+  --g50:#F9FAF7;--g100:#F1EFE8;--g200:#D3D1C7;--g400:#888780;--g600:#5F5E5A;--g800:#2C2C2A;
+  --bd:rgba(0,0,0,0.08);
+}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#c8e6d8,#a8d4c0);display:flex;align-items:center;justify-content:center}
+button{cursor:pointer;font-family:'DM Sans',sans-serif;border:none;background:none;outline:none}
+input{font-family:'DM Sans',sans-serif;outline:none;border:none}
+
+#phone{width:390px;height:780px;background:#fff;border-radius:40px;box-shadow:0 20px 60px rgba(0,0,0,.2);display:flex;flex-direction:column;overflow:hidden;position:relative}
+#statusbar{background:var(--green);color:#fff;padding:12px 24px 8px;display:flex;justify-content:space-between;font-size:11px;font-weight:600;flex-shrink:0}
+#screenwrap{flex:1;overflow:hidden;display:flex;flex-direction:column}
+#bottomnav{display:flex;background:#fff;border-top:1px solid var(--bd);padding-bottom:12px;flex-shrink:0}
+.navbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border:none;background:none;cursor:pointer}
+.navbtn .ni{font-size:20px}
+.navbtn .nl{font-size:9px;font-weight:600;color:var(--g400)}
+.navbtn.active .nl{color:var(--green)}
+.navdot{width:4px;height:4px;border-radius:50%;background:var(--green);display:none}
+.navbtn.active .navdot{display:block}
+
+#toast{position:absolute;bottom:78px;left:16px;right:16px;background:var(--gd);color:#fff;border-radius:12px;padding:12px 16px;font-size:13px;font-weight:500;display:none;align-items:center;gap:8px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,.15);animation:fadein .3s ease}
+
+/* SCREENS */
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
+.screen.active{display:flex}
+.gheader{background:linear-gradient(160deg,var(--green),var(--gd));color:#fff;padding:16px 20px 20px;flex-shrink:0}
+.scroller{flex:1;overflow-y:auto;padding:14px 16px}
+.scroller::-webkit-scrollbar{width:0}
+
+/* UTIL */
+.card{background:#fff;border-radius:16px;border:1px solid var(--bd);overflow:hidden;margin-bottom:12px}
+.pill{display:inline-block;border-radius:99px;font-size:10px;font-weight:700;padding:3px 10px}
+.sec{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:10px}
+.btn-green{background:var(--green);color:#fff;border-radius:14px;padding:12px;width:100%;font-weight:700;font-size:14px;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;border:none;cursor:pointer}
+.btn-gray{background:var(--g100);color:var(--g600);border-radius:10px;padding:9px;font-weight:600;font-size:13px;border:none;cursor:pointer;flex:1}
+input.field{width:100%;border:1px solid var(--bd);border-radius:8px;padding:8px 12px;font-size:13px;margin-bottom:8px;background:var(--g50);font-family:'DM Sans',sans-serif}
+
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scan{0%,100%{top:15%}50%{top:78%}}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="phone">
+  <div id="statusbar"><span style="font-family:'Nunito',sans-serif;font-weight:900;letter-spacing:.5px">🪺 List-Nest</span><span>●●● 100%</span></div>
+  <div id="screenwrap">
+
+    <!-- HOME -->
+    <div class="screen active" id="s-home">
+      <div class="gheader">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div>
+            <div style="font-size:12px;opacity:.8;font-family:'Nunito',sans-serif">Welcome back,</div>
+            <div style="font-size:20px;font-weight:800;font-family:'Nunito',sans-serif">List-Nest 🪺</div>
+          </div>
+          <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px">AH</div>
+        </div>
+        <div style="background:rgba(255,255,255,.13);border-radius:14px;padding:12px 16px;border:1px solid rgba(255,255,255,.2)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div><div style="font-size:11px;opacity:.75;margin-bottom:2px">Monthly Budget</div><div style="font-size:22px;font-weight:900;font-family:'Nunito',sans-serif">SAR 1,240</div></div>
+            <div style="text-align:right"><div style="font-size:11px;opacity:.75;margin-bottom:2px">Spent</div><div style="font-size:18px;font-weight:800;font-family:'Nunito',sans-serif">SAR 769</div></div>
+          </div>
+          <div style="background:rgba(255,255,255,.2);border-radius:99px;height:6px;overflow:hidden"><div style="background:#fff;width:62%;height:100%;border-radius:99px"></div></div>
+          <div style="display:flex;justify-content:space-between;margin-top:5px"><span style="font-size:10px;opacity:.7">62% used</span><span style="font-size:10px;opacity:.7">38% remaining</span></div>
+        </div>
+      </div>
+      <div class="scroller">
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="stats-row"></div>
+        <!-- Alert -->
+        <div style="background:var(--al);border-radius:12px;border:1px solid rgba(186,117,23,.2);padding:10px 14px;display:flex;gap:10px;align-items:center;margin-bottom:14px">
+          <span style="font-size:18px">⚠️</span>
+          <div><div style="font-size:12px;font-weight:700;color:var(--amber)">Budget Alert</div><div style="font-size:11px;color:#7a5f2a">At 62% with 14 days remaining — consider slowing spending.</div></div>
+        </div>
+        <!-- Members -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div class="sec" style="margin-bottom:0">Family Members</div>
+          <button onclick="nav('family')" style="font-size:11px;color:var(--green);font-weight:600">Manage →</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px" id="member-pills"></div>
+        <!-- Filter -->
+        <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center">
+          <button class="filter-btn active" data-f="all" onclick="setFilter('all',this)">All</button>
+          <button class="filter-btn" data-f="pending" onclick="setFilter('pending',this)">Pending</button>
+          <button class="filter-btn" data-f="done" onclick="setFilter('done',this)">Done</button>
+          <span style="margin-left:auto;font-size:11px;color:var(--g400)" id="item-count"></span>
+        </div>
+        <style>
+          .filter-btn{padding:5px 14px;border-radius:99px;font-size:11px;font-weight:600;background:var(--g100);color:var(--g600);border:none;cursor:pointer;transition:all .2s}
+          .filter-btn.active{background:var(--green);color:#fff}
+        </style>
+        <!-- List -->
+        <div class="card" id="item-list-card">
+          <div style="padding:11px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px">
+            <div style="width:32px;height:32px;border-radius:9px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:15px">🛒</div>
+            <div style="flex:1"><div style="font-weight:600;font-size:13px">Merged Family List</div><div style="font-size:11px;color:var(--g400)" id="list-meta">loading...</div></div>
+            <div class="pill" style="background:var(--gl);color:var(--gd)">Merged</div>
+          </div>
+          <div id="item-rows"></div>
+        </div>
+        <!-- Add form -->
+        <div id="add-form" style="display:none;background:#fff;border-radius:16px;border:1.5px solid var(--green);padding:14px;margin-bottom:12px">
+          <div style="font-weight:700;font-size:13px;font-family:'Nunito',sans-serif;margin-bottom:10px">Add New Item</div>
+          <input class="field" id="add-name" placeholder="Item name..."/>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <input class="field" id="add-qty" placeholder="Qty (e.g. ×2, 1kg)" style="margin-bottom:0"/>
+            <input class="field" id="add-price" placeholder="Price (SAR)" type="number" style="margin-bottom:0"/>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-gray" onclick="hideAddForm()">Cancel</button>
+            <button onclick="addItem()" style="flex:2;padding:9px;border-radius:10px;background:var(--green);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer">Add Item</button>
+          </div>
+        </div>
+        <button class="btn-green" id="add-btn" onclick="showAddForm()">+ Add Item</button>
+      </div>
+    </div>
+
+    <!-- SCANNER -->
+    <div class="screen" id="s-scan">
+      <div class="gheader" style="padding:14px 20px 18px">
+        <div style="font-size:20px;font-weight:800;font-family:'Nunito',sans-serif">Barcode Scanner 📷</div>
+        <div style="font-size:12px;opacity:.8;margin-top:2px">Scan to confirm purchases</div>
+      </div>
+      <div class="scroller">
+        <div style="background:#0a1a12;border-radius:20px;height:210px;position:relative;overflow:hidden;margin-bottom:14px">
+          <div id="scan-corners"></div>
+          <div id="scan-content" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+            <div style="font-size:44px">📦</div>
+            <div style="color:#fff;font-size:12px;opacity:.6">Tap Scan to begin</div>
+          </div>
+          <div id="scan-line" style="display:none;position:absolute;left:10%;width:80%;height:2px;background:var(--green);border-radius:99px;animation:scan 1.4s ease-in-out infinite;box-shadow:0 0 8px var(--green)"></div>
+        </div>
+        <button id="scan-btn" onclick="doScan()" class="btn-green" style="margin-bottom:12px">📷 Tap to Scan Barcode</button>
+        <div id="scan-result" style="display:none" class="card" style="border:1.5px solid var(--green);padding:14px;margin-bottom:14px"></div>
+        <div class="sec">Scan History</div>
+        <div class="card" id="scan-history"></div>
+      </div>
+    </div>
+
+    <!-- RECIPES -->
+    <div class="screen" id="s-recipes">
+      <div class="gheader" style="padding:14px 20px 18px">
+        <div style="font-size:20px;font-weight:800;font-family:'Nunito',sans-serif">Recipes 🍽️</div>
+        <div style="font-size:12px;opacity:.8;margin-top:2px">AI-powered meal planning</div>
+      </div>
+      <div class="scroller">
+        <!-- AI Box -->
+        <div style="background:linear-gradient(135deg,var(--pl),#fff);border-radius:16px;border:1.5px solid var(--purple);padding:14px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:20px">✨</span><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--purple)">AI Recipe Generator</div></div>
+          <div style="font-size:12px;color:var(--g600);margin-bottom:10px">Tell the AI what you're craving or have at home!</div>
+          <div style="display:flex;gap:8px">
+            <input id="ai-input" placeholder="e.g. chicken with rice, vegetarian..." style="flex:1;border:1px solid rgba(83,74,183,.3);border-radius:10px;padding:8px 12px;font-size:12px;background:#fff;font-family:'DM Sans',sans-serif;outline:none"/>
+            <button onclick="generateRecipe()" id="ai-btn" style="padding:8px 14px;border-radius:10px;background:var(--purple);color:#fff;font-weight:700;font-size:12px;border:none;cursor:pointer;white-space:nowrap">Generate</button>
+          </div>
+        </div>
+        <div id="ai-result" style="display:none"></div>
+        <div class="sec">Suggested Recipes</div>
+        <div id="recipe-list"></div>
+      </div>
+    </div>
+
+    <!-- FAMILY -->
+    <div class="screen" id="s-family">
+      <div class="gheader" style="padding:14px 20px 18px">
+        <div style="font-size:20px;font-weight:800;font-family:'Nunito',sans-serif">Family 👨‍👩‍👧</div>
+        <div style="font-size:12px;opacity:.8;margin-top:2px">Members &amp; coordination</div>
+      </div>
+      <div style="display:flex;background:#f3f4f1;border-bottom:1px solid var(--bd);padding:0 6px;flex-shrink:0" id="family-tabs">
+        <button class="ftab active" onclick="fTab('overview',this)">Overview</button>
+        <button class="ftab" onclick="fTab('lists',this)">Lists</button>
+        <button class="ftab" onclick="fTab('activity',this)">Activity</button>
+      </div>
+      <div class="scroller" id="family-content"></div>
+      <style>
+        .ftab{flex:1;padding:10px 4px;font-size:11px;font-weight:600;background:none;border:none;color:var(--g400);border-bottom:2px solid transparent;cursor:pointer;transition:color .2s;text-transform:capitalize}
+        .ftab.active{color:var(--green);border-bottom-color:var(--green)}
+      </style>
+    </div>
+
+    <!-- TIMERS -->
+    <div class="screen" id="s-lists">
+      <div class="gheader" style="padding:14px 20px 18px">
+        <div style="font-size:20px;font-weight:800;font-family:'Nunito',sans-serif">Reminders ⏰</div>
+        <div style="font-size:12px;opacity:.8;margin-top:2px">Never forget an item again</div>
+      </div>
+      <div class="scroller">
+        <div class="sec">Active Reminders</div>
+        <div id="timer-list"></div>
+        <div id="timer-form" style="display:none;background:#fff;border-radius:16px;border:1.5px solid var(--green);padding:14px;margin-bottom:10px">
+          <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;margin-bottom:10px">New Reminder</div>
+          <input class="field" id="t-label" placeholder="Reminder label..."/>
+          <input class="field" id="t-note" placeholder="Note (optional)..."/>
+          <input class="field" id="t-time" placeholder="Time label (e.g. 30m, 2h, Fri)"/>
+          <div style="margin-bottom:12px"><div style="font-size:11px;color:var(--g600);margin-bottom:6px">Color</div>
+            <div style="display:flex;gap:8px" id="color-pickers"></div></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-gray" onclick="hideTimerForm()">Cancel</button>
+            <button onclick="addTimer()" style="flex:2;padding:9px;border-radius:10px;background:var(--green);color:#fff;font-weight:700;font-size:13px;border:none;cursor:pointer">Add Reminder</button>
+          </div>
+        </div>
+        <button class="btn-green" id="timer-add-btn" onclick="showTimerForm()">+ New Reminder</button>
+      </div>
+    </div>
+
+  </div><!-- end screenwrap -->
+
+  <div id="bottomnav">
+    <button class="navbtn active" data-s="home" onclick="nav('home',this)"><span class="ni">🏠</span><span class="nl">Home</span><div class="navdot"></div></button>
+    <button class="navbtn" data-s="lists" onclick="nav('lists',this)"><span class="ni">⏰</span><span class="nl">Reminders</span><div class="navdot"></div></button>
+    <button class="navbtn" data-s="scan" onclick="nav('scan',this)"><span class="ni">📷</span><span class="nl">Scan</span><div class="navdot"></div></button>
+    <button class="navbtn" data-s="recipes" onclick="nav('recipes',this)"><span class="ni">🍽️</span><span class="nl">Recipes</span><div class="navdot"></div></button>
+    <button class="navbtn" data-s="family" onclick="nav('family',this)"><span class="ni">👨‍👩‍👧</span><span class="nl">Family</span><div class="navdot"></div></button>
+  </div>
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ── DATA ── */
+const MEMBERS=[
+  {id:1,name:'Mama',ini:'Ma',col:'#E1F5EE',tc:'#0F6E56'},
+  {id:2,name:'Baba',ini:'Ba',col:'#EEEDFE',tc:'#534AB7'},
+  {id:3,name:'Sara',ini:'Sa',col:'#FAEEDA',tc:'#BA7517'},
+  {id:4,name:'Omar',ini:'Om',col:'#FAECE7',tc:'#D85A30'},
+];
+let items=[
+  {id:1,name:'Milk (2L)',qty:'×2',price:14,done:true,member:1},
+  {id:2,name:'Chicken breast',qty:'1kg',price:38,done:false,member:1},
+  {id:3,name:'Olive oil',qty:'×1',price:22,done:false,member:2},
+  {id:4,name:'Brown rice',qty:'2kg',price:18,done:false,member:2},
+  {id:5,name:'Eggs',qty:'×12',price:16,done:false,member:3},
+  {id:6,name:'Laundry detergent',qty:'×1',price:32,done:false,member:3},
+  {id:7,name:'Yogurt',qty:'×4',price:20,done:false,member:4},
+  {id:8,name:'Tomatoes',qty:'1kg',price:9,done:false,member:1},
+];
+const RECIPES=[
+  {id:1,name:'Lemon Herb Chicken',emoji:'🍗',n:6,t:30,tag:'AI Generated',items:['Chicken breast','Lemon','Garlic','Olive oil','Rosemary','Salt']},
+  {id:2,name:'Fattoush Salad',emoji:'🥗',n:8,t:15,tag:'Popular',items:['Tomatoes','Cucumber','Lettuce','Radish','Pita bread','Sumac','Olive oil','Lemon']},
+  {id:3,name:'Kabsa Rice',emoji:'🍚',n:12,t:60,tag:'AI Generated',items:['Brown rice','Chicken','Onion','Tomatoes','Cardamom','Cinnamon','Bay leaves','Raisins','Almonds','Saffron','Ghee','Salt']},
+  {id:4,name:'Shakshuka',emoji:'🍳',n:7,t:25,tag:'Trending',items:['Eggs','Tomatoes','Bell pepper','Onion','Cumin','Paprika','Olive oil']},
+  {id:5,name:'Hummus',emoji:'🫘',n:5,t:10,tag:'Quick',items:['Chickpeas','Tahini','Lemon','Garlic','Olive oil']},
+];
+let timers=[
+  {id:1,label:'Forgotten items',note:'Eggs, Laundry detergent',time:'2h',color:'#D85A30',bg:'#FAECE7'},
+  {id:2,label:'Weekly big shop',note:'Merged list · 8 items',time:'Fri',color:'#534AB7',bg:'#EEEDFE'},
+  {id:3,label:'Budget review',note:'62% used — check spending',time:'30m',color:'#1D9E75',bg:'#E1F5EE'},
+];
+let addedRecipes=[];
+let currentFilter='all';
+let selectedColorIdx=0;
+const TIMER_COLS=[
+  {color:'#1D9E75',bg:'#E1F5EE'},
+  {color:'#D85A30',bg:'#FAECE7'},
+  {color:'#534AB7',bg:'#EEEDFE'},
+  {color:'#BA7517',bg:'#FAEEDA'},
+];
+const TAG_COLS={'AI Generated':{bg:'#EEEDFE',col:'#534AB7'},'Popular':{bg:'#E1F5EE',col:'#0F6E56'},'Trending':{bg:'#FAECE7',col:'#D85A30'},'Quick':{bg:'#FAEEDA',col:'#BA7517'}};
+const SCAN_PRODS=[
+  {name:'Almarai Milk 2L',price:14,qty:'×1'},
+  {name:'Extra Virgin Olive Oil',price:28,qty:'×1'},
+  {name:'Basmati Rice 2kg',price:22,qty:'1 bag'},
+  {name:'Fresh Orange Juice 1L',price:12,qty:'×1'},
+  {name:'Greek Yogurt 500g',price:18,qty:'×2'},
+];
+const SCAN_HIST=[{name:'Almarai Milk 2L',time:'2 min ago',found:true},{name:'Chips Oman BBQ',time:'8 min ago',found:false}];
+let scanHistory=[...SCAN_HIST];
+let scanning=false;
+let scanResult=null;
+
+/* ── NAV ── */
+function nav(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else {
+    const b=document.querySelector(`.navbtn[data-s="${id}"]`);
+    if(b) b.classList.add('active');
+  }
+  if(id==='home') renderHome();
+  if(id==='family') renderFamily('overview');
+  if(id==='recipes') renderRecipes();
+  if(id==='lists') renderTimers();
+  if(id==='scan') renderScan();
+}
+
+/* ── TOAST ── */
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.innerHTML='✅ '+msg;t.style.display='flex';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+/* ── HOME ── */
+function renderHome(){
+  renderStats();renderMembers();renderItems();
+}
+function renderStats(){
+  const done=items.filter(i=>i.done).length;
+  const el=document.getElementById('stats-row');
+  el.innerHTML=[
+    {icon:'🛍️',val:items.length,label:'Total items'},
+    {icon:'✅',val:done,label:'Bought'},
+    {icon:'⏳',val:items.length-done,label:'Remaining'},
+  ].map(s=>`<div style="background:var(--g50);border-radius:12px;padding:10px 12px;border:1px solid var(--bd)">
+    <div style="font-size:16px;margin-bottom:4px">${s.icon}</div>
+    <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:18px;color:var(--g800)">${s.val}</div>
+    <div style="font-size:10px;color:var(--g400)">${s.label}</div>
+  </div>`).join('');
+}
+function renderMembers(){
+  const el=document.getElementById('member-pills');
+  el.innerHTML=MEMBERS.map(m=>`<button onclick="toggleMember(${m.id})" id="mpill-${m.id}" style="display:flex;align-items:center;gap:6px;background:${m.col};border-radius:99px;padding:5px 10px 5px 5px;border:1.5px solid ${m.tc};cursor:pointer">
+    <div style="width:24px;height:24px;border-radius:50%;background:${m.col};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:${m.tc};font-family:'Nunito',sans-serif;border:1px solid ${m.tc}40">${m.ini}</div>
+    <span style="font-size:11px;font-weight:600;color:${m.tc}">${m.name}</span>
+  </button>`).join('');
+}
+function toggleMember(id){renderItems();}
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderItems();
+}
+function renderItems(){
+  const filtered=items.filter(i=>currentFilter==='done'?i.done:currentFilter==='pending'?!i.done:true);
+  const done=items.filter(i=>i.done).length;
+  document.getElementById('list-meta').textContent=`${done}/${items.length} items done`;
+  document.getElementById('item-count').textContent=filtered.length+' items';
+  renderStats();
+  if(filtered.length===0){
+    document.getElementById('item-rows').innerHTML='<div style="padding:20px;text-align:center;color:var(--g400);font-size:13px">No items here 🎉</div>';
+    return;
+  }
+  document.getElementById('item-rows').innerHTML=filtered.map((item,idx)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:${idx<filtered.length-1?'1px solid var(--bd)':'none'}">
+      <button onclick="toggleItem(${item.id})" style="width:22px;height:22px;border-radius:7px;border:${item.done?'none':'2px solid var(--g200)'};background:${item.done?'var(--green)':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;padding:0">
+        ${item.done?'<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>':''}
+      </button>
+      <span style="flex:1;font-size:13px;text-decoration:${item.done?'line-through':'none'};color:${item.done?'var(--g400)':'var(--g800)'}">${item.name}</span>
+      <span style="font-size:11px;color:var(--g400);margin-right:4px">${item.qty}</span>
+      ${item.price>0?`<span style="font-size:12px;font-weight:600;color:var(--gd)">SAR ${item.price}</span>`:''}
+      <button onclick="deleteItem(${item.id})" style="font-size:13px;color:var(--g200);padding:0 2px;cursor:pointer" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--g200)'">✕</button>
+    </div>`).join('');
+}
+function toggleItem(id){
+  items=items.map(i=>i.id===id?{...i,done:!i.done}:i);
+  renderItems();
+}
+function deleteItem(id){
+  items=items.filter(i=>i.id!==id);
+  renderItems();
+}
+function showAddForm(){document.getElementById('add-form').style.display='block';document.getElementById('add-btn').style.display='none';document.getElementById('add-name').focus();}
+function hideAddForm(){document.getElementById('add-form').style.display='none';document.getElementById('add-btn').style.display='flex';}
+function addItem(){
+  const name=document.getElementById('add-name').value.trim();
+  if(!name)return;
+  const qty=document.getElementById('add-qty').value||'×1';
+  const price=parseFloat(document.getElementById('add-price').value)||0;
+  items.push({id:Date.now(),name,qty,price,done:false,member:1});
+  document.getElementById('add-name').value='';document.getElementById('add-qty').value='';document.getElementById('add-price').value='';
+  hideAddForm();renderItems();
+}
+
+/* ── SCANNER ── */
+function renderScan(){
+  document.getElementById('scan-corners').innerHTML=`
+    <div style="position:absolute;width:28px;height:28px;border-top:3px solid var(--green);border-left:3px solid var(--green);top:28px;left:38px"></div>
+    <div style="position:absolute;width:28px;height:28px;border-top:3px solid var(--green);border-right:3px solid var(--green);top:28px;right:38px"></div>
+    <div style="position:absolute;width:28px;height:28px;border-bottom:3px solid var(--green);border-left:3px solid var(--green);bottom:28px;left:38px"></div>
+    <div style="position:absolute;width:28px;height:28px;border-bottom:3px solid var(--green);border-right:3px solid var(--green);bottom:28px;right:38px"></div>`;
+  renderScanHistory();
+}
+function renderScanHistory(){
+  document.getElementById('scan-history').innerHTML=scanHistory.map((h,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:${i<scanHistory.length-1?'1px solid var(--bd)':'none'}">
+      <div style="width:32px;height:32px;border-radius:9px;background:${h.found?'var(--gl)':'var(--rl)'};display:flex;align-items:center;justify-content:center;font-size:14px">${h.found?'✅':'❓'}</div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:500">${h.name}</div><div style="font-size:10px;color:var(--g400)">${h.time}</div></div>
+      <div style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;background:${h.found?'var(--gl)':'var(--rl)'};color:${h.found?'var(--gd)':'var(--red)'}">${h.found?'Found':'Unknown'}</div>
+    </div>`).join('');
+}
+function doScan(){
+  if(scanning)return;
+  scanning=true;scanResult=null;
+  const btn=document.getElementById('scan-btn');
+  const content=document.getElementById('scan-content');
+  const line=document.getElementById('scan-line');
+  const res=document.getElementById('scan-result');
+  btn.textContent='⏳ Scanning...';btn.disabled=true;res.style.display='none';
+  content.innerHTML='<div style="font-size:36px">📷</div>';
+  line.style.display='block';
+  setTimeout(()=>{
+    scanning=false;
+    const p=SCAN_PRODS[Math.floor(Math.random()*SCAN_PRODS.length)];
+    scanResult=p;
+    line.style.display='none';
+    btn.textContent='📷 Tap to Scan Barcode';btn.disabled=false;
+    content.innerHTML=`<div style="text-align:center;padding:16px"><div style="font-size:36px;margin-bottom:6px">✅</div><div style="color:#fff;font-weight:700;font-size:14px;font-family:'Nunito',sans-serif">${p.name}</div><div style="color:var(--gm);font-size:12px;margin-top:4px">SAR ${p.price} · ${p.qty}</div></div>`;
+    const match=items.find(i=>i.name.toLowerCase().includes(p.name.split(' ')[0].toLowerCase()));
+    res.style.display='block';
+    res.innerHTML=`<div style="padding:14px;border:1.5px solid var(--green);border-radius:14px">
+      <div style="font-weight:700;font-size:13px;font-family:'Nunito',sans-serif;margin-bottom:8px">Product Found ✅</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px">${p.name}</span><span style="font-weight:700;color:var(--gd);font-size:13px">SAR ${p.price}</span></div>
+      ${match?`<div style="background:var(--bl);border-radius:8px;padding:6px 10px;margin-bottom:8px;font-size:11px;color:var(--blue)">ℹ️ This item is already on your list</div>`:''}
+      <div style="display:flex;gap:8px">
+        <button onclick="dismissScan()" style="flex:1;padding:8px;border-radius:10px;background:var(--g100);color:var(--g600);font-weight:600;font-size:12px;border:none;cursor:pointer">Dismiss</button>
+        ${match?`<button onclick="markScanBought(${match.id})" style="flex:2;padding:8px;border-radius:10px;background:var(--green);color:#fff;font-weight:700;font-size:12px;border:none;cursor:pointer">Mark as Bought ✅</button>`
+        :`<button onclick="addScanToList()" style="flex:2;padding:8px;border-radius:10px;background:var(--green);color:#fff;font-weight:700;font-size:12px;border:none;cursor:pointer">Add to List +</button>`}
+      </div>
+    </div>`;
+    scanHistory.unshift({name:p.name,time:'just now',found:true});
+    if(scanHistory.length>5)scanHistory.pop();
+    renderScanHistory();
+  },2200);
+}
+function dismissScan(){document.getElementById('scan-result').style.display='none';scanResult=null;document.getElementById('scan-content').innerHTML='<div style="font-size:44px">📦</div><div style="color:#fff;font-size:12px;opacity:.6">Tap Scan to begin</div>';}
+function markScanBought(id){toggleItem(id);dismissScan();toast('Item marked as bought!');}
+function addScanToList(){if(!scanResult)return;items.push({id:Date.now(),name:scanResult.name,qty:scanResult.qty,price:scanResult.price,done:false,member:1});dismissScan();toast(scanResult.name+' added to list!');}
+
+/* ── RECIPES ── */
+function renderRecipes(){
+  const el=document.getElementById('recipe-list');
+  el.innerHTML=RECIPES.map(r=>{
+    const tc=TAG_COLS[r.tag]||TAG_COLS['Popular'];
+    const added=addedRecipes.includes(r.id);
+    return `<div style="background:#fff;border-radius:16px;border:1px solid var(--bd);padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;cursor:pointer" onclick="viewRecipe(${r.id})">
+      <div style="width:54px;height:54px;border-radius:12px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${r.emoji}</div>
+      <div style="flex:1">
+        <div style="font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;margin-bottom:2px">${r.name}</div>
+        <div style="font-size:11px;color:var(--g400)">${r.n} ingredients · ${r.t} min</div>
+        <div style="margin-top:5px;display:inline-block;background:${tc.bg};color:${tc.col};font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px">${r.tag}</div>
+      </div>
+      <button onclick="event.stopPropagation();addRecipeIngredients(${r.id})" style="padding:7px 12px;border-radius:10px;background:${added?'var(--gl)':'var(--green)'};color:${added?'var(--gd)':'#fff'};font-weight:700;font-size:11px;border:none;cursor:pointer;flex-shrink:0">${added?'✅':'+ Add'}</button>
+    </div>`;
+  }).join('');
+}
+function viewRecipe(id){
+  const r=RECIPES.find(x=>x.id===id);if(!r)return;
+  const tc=TAG_COLS[r.tag]||TAG_COLS['Popular'];
+  const added=addedRecipes.includes(r.id);
+  const el=document.getElementById('s-recipes');
+  el.querySelector('.scroller').innerHTML=`
+    <button onclick="backToRecipes()" style="display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer;padding:0;border:none;background:none">← Back to Recipes</button>
+    <div style="text-align:center;padding:20px 0;background:var(--gl);border-radius:16px;margin-bottom:16px">
+      <div style="font-size:64px">${r.emoji}</div>
+      <div style="margin-top:8px;font-family:'Nunito',sans-serif;font-weight:800;font-size:18px">${r.name}</div>
+      <div style="display:flex;justify-content:center;gap:12px;margin-top:6px">
+        <span style="font-size:12px;color:var(--gd);font-weight:600">⏱ ${r.t} min</span>
+        <span style="font-size:12px;color:var(--gd);font-weight:600">🥄 ${r.n} ingredients</span>
+      </div>
+      <div style="margin-top:8px;display:inline-block;background:${tc.bg};color:${tc.col};font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px">${r.tag}</div>
+    </div>
+    <div style="background:#fff;border-radius:14px;border:1px solid var(--bd);padding:14px;margin-bottom:14px">
+      <div class="sec">Ingredients Needed</div>
+      ${r.items.map((item,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:${i<r.items.length-1?'1px solid var(--bd)':'none'}">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+        <span style="font-size:13px">${item}</span>
+      </div>`).join('')}
+    </div>
+    <button onclick="addRecipeIngredients(${r.id})" ${added?'disabled':''} style="width:100%;padding:13px;border-radius:14px;background:${added?'var(--g100)':'var(--green)'};color:${added?'var(--g400)':'#fff'};font-weight:800;font-size:14px;font-family:'Nunito',sans-serif;border:none;cursor:pointer">
+      ${added?'✅ Already Added to List':'+ Add Ingredients to List'}
+    </button>`;
+}
+function backToRecipes(){
+  const el=document.getElementById('s-recipes');
+  el.querySelector('.scroller').innerHTML=`
+    <div style="background:linear-gradient(135deg,var(--pl),#fff);border-radius:16px;border:1.5px solid var(--purple);padding:14px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:20px">✨</span><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--purple)">AI Recipe Generator</div></div>
+      <div style="font-size:12px;color:var(--g600);margin-bottom:10px">Tell the AI what you're craving or have at home!</div>
+      <div style="display:flex;gap:8px">
+        <input id="ai-input" placeholder="e.g. chicken with rice, vegetarian..." style="flex:1;border:1px solid rgba(83,74,183,.3);border-radius:10px;padding:8px 12px;font-size:12px;background:#fff;font-family:'DM Sans',sans-serif;outline:none"/>
+        <button onclick="generateRecipe()" id="ai-btn" style="padding:8px 14px;border-radius:10px;background:var(--purple);color:#fff;font-weight:700;font-size:12px;border:none;cursor:pointer;white-space:nowrap">Generate</button>
+      </div>
+    </div>
+    <div id="ai-result" style="display:none"></div>
+    <div class="sec">Suggested Recipes</div>
+    <div id="recipe-list"></div>`;
+  renderRecipes();
+}
+function addRecipeIngredients(id){
+  if(addedRecipes.includes(id))return;
+  const r=RECIPES.find(x=>x.id===id);if(!r)return;
+  addedRecipes.push(id);
+  r.items.filter(n=>!items.find(i=>i.name.toLowerCase().includes(n.toLowerCase()))).forEach(n=>items.push({id:Date.now()+Math.random(),name:n,qty:'×1',price:0,done:false,member:1}));
+  toast(r.name+' ingredients added!');
+  renderRecipes();
+}
+const EMOJIS=['🥘','🍲','🥗','🍜','🫕','🥙','🍱','🥩'];
+function generateRecipe(){
+  const input=document.getElementById('ai-input');
+  const prompt=input.value.trim();if(!prompt)return;
+  const btn=document.getElementById('ai-btn');
+  btn.textContent='⏳';btn.disabled=true;input.disabled=true;
+  document.getElementById('ai-result').style.display='block';
+  document.getElementById('ai-result').innerHTML=`<div style="background:#fff;border-radius:14px;border:1px solid var(--bd);padding:20px;text-align:center;margin-bottom:14px"><div style="font-size:32px;margin-bottom:8px">🤖</div><div style="font-weight:600;font-size:13px;color:var(--purple)">AI is cooking up a recipe...</div></div>`;
+  setTimeout(()=>{
+    const name=prompt.split(' ').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ')+' Delight';
+    const emoji=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+    const n=Math.floor(Math.random()*6)+5;
+    const t=[20,30,45,60][Math.floor(Math.random()*4)];
+    const newR={id:Date.now(),name,emoji,n,t,tag:'AI Generated',items:['Onion','Garlic','Olive oil','Salt','Pepper','Fresh herbs',prompt.split(' ')[0]]};
+    RECIPES.unshift(newR);
+    btn.textContent='Generate';btn.disabled=false;input.disabled=false;input.value='';
+    document.getElementById('ai-result').innerHTML=`<div style="background:var(--pl);border-radius:14px;border:1.5px solid var(--purple);padding:14px;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--purple);margin-bottom:8px">✨ NEWLY GENERATED</div>
+      <div style="display:flex;align-items:center;gap:12px;cursor:pointer" onclick="viewRecipe(${newR.id})">
+        <div style="width:54px;height:54px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">${emoji}</div>
+        <div style="flex:1"><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--purple)">${name}</div><div style="font-size:11px;color:var(--g600);margin-top:2px">${n} ingredients · ${t} min</div></div>
+        <button onclick="event.stopPropagation();addRecipeIngredients(${newR.id})" style="padding:7px 12px;border-radius:10px;background:var(--purple);color:#fff;font-weight:700;font-size:11px;border:none;cursor:pointer">+ Add</button>
+      </div>
+    </div>`;
+    renderRecipes();
+  },2500);
+}
+
+/* ── FAMILY ── */
+function renderFamily(tab){
+  const el=document.getElementById('family-content');
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.ftab[onclick*="${tab}"]`).classList.add('active');
+  if(tab==='overview'){
+    el.innerHTML='<div class="sec">Member Overview</div>'+MEMBERS.map(m=>{
+      const mi=items.filter(i=>i.member===m.id);
+      const spent=mi.filter(i=>i.done).reduce((s,i)=>s+i.price,0);
+      const done=mi.filter(i=>i.done).length;
+      const pct=mi.length>0?Math.round((done/mi.length)*100):0;
+      return `<div style="background:#fff;border-radius:16px;border:1px solid var(--bd);padding:14px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+          <div style="width:44px;height:44px;border-radius:50%;background:${m.col};display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:${m.tc}">${m.ini}</div>
+          <div style="flex:1"><div style="font-weight:700;font-size:14px">${m.name}</div><div style="font-size:11px;color:var(--g400)">${mi.length} items assigned</div></div>
+          <div style="text-align:right"><div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;color:var(--gd)">SAR ${spent}</div><div style="font-size:10px;color:var(--g400)">spent</div></div>
+        </div>
+        <div style="background:var(--g100);border-radius:99px;height:6px;overflow:hidden"><div style="background:${m.tc};width:${pct}%;height:100%;border-radius:99px;transition:width .4s ease"></div></div>
+        <div style="font-size:10px;color:var(--g400);margin-top:4px">${done}/${mi.length} items done</div>
+      </div>`;
+    }).join('');
+  } else if(tab==='lists'){
+    el.innerHTML='<div class="sec">Lists by Member</div>'+MEMBERS.map(m=>{
+      const mi=items.filter(i=>i.member===m.id);
+      if(!mi.length)return'';
+      return `<div style="background:#fff;border-radius:16px;border:1px solid var(--bd);overflow:hidden;margin-bottom:12px">
+        <div style="padding:10px 14px;background:${m.col};display:flex;align-items:center;gap:8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;font-family:'Nunito',sans-serif;color:${m.tc}">${m.ini}</div>
+          <span style="font-weight:700;font-size:13px;color:${m.tc}">${m.name}'s List (${mi.length})</span>
+        </div>
+        ${mi.map((item,i)=>`<div style="padding:8px 14px;border-bottom:${i<mi.length-1?'1px solid var(--bd)':'none'};display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px">${item.done?'✅':'⬜'}</span>
+          <span style="flex:1;font-size:12px;text-decoration:${item.done?'line-through':'none'};color:${item.done?'var(--g400)':'var(--g800)'}">${item.name}</span>
+          ${item.price>0?`<span style="font-size:11px;color:var(--g400)">SAR ${item.price}</span>`:''}
+        </div>`).join('')}
+      </div>`;
+    }).join('');
+  } else {
+    const acts=[
+      {m:MEMBERS[0],action:'added Chicken breast to the list',time:'5 min ago',icon:'➕'},
+      {m:MEMBERS[1],action:'marked Milk as purchased',time:'12 min ago',icon:'✅'},
+      {m:MEMBERS[2],action:'added Eggs to the list',time:'1 hour ago',icon:'➕'},
+      {m:MEMBERS[0],action:'generated Lemon Herb Chicken recipe',time:'2 hours ago',icon:'🍗'},
+      {m:MEMBERS[3],action:'joined the family list',time:'Yesterday',icon:'👋'},
+    ];
+    el.innerHTML='<div class="sec">Recent Activity</div>'+acts.map(a=>`
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <div style="width:36px;height:36px;border-radius:50%;background:${a.m.col};display:flex;align-items:center;justify-content:center;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;color:${a.m.tc};flex-shrink:0">${a.m.ini}</div>
+        <div style="flex:1;background:#fff;border-radius:12px;padding:8px 12px;border:1px solid var(--bd)">
+          <span style="font-weight:600;font-size:12px">${a.m.name}</span>
+          <span style="font-size:12px;color:var(--g600)"> ${a.action} ${a.icon}</span>
+          <div style="font-size:10px;color:var(--g400);margin-top:2px">${a.time}</div>
+        </div>
+      </div>`).join('');
+  }
+}
+function fTab(tab,btn){renderFamily(tab);}
+
+/* ── TIMERS ── */
+function renderTimers(){
+  const el=document.getElementById('timer-list');
+  if(!timers.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--g400);font-size:13px"><div style="font-size:40px;margin-bottom:8px">⏰</div>No reminders set.</div>';return;}
+  el.innerHTML=timers.map(t=>`
+    <div style="background:#fff;border-radius:16px;border:1px solid var(--bd);padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px">
+      <div style="width:48px;height:48px;border-radius:50%;flex-shrink:0;border:3px solid ${t.bg};border-top:3px solid ${t.color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:${t.color};font-family:'Nunito',sans-serif;animation:spin 3s linear infinite">${t.time}</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:13px;margin-bottom:2px">${t.label}</div><div style="font-size:11px;color:var(--g400)">${t.note}</div></div>
+      <button onclick="deleteTimer(${t.id})" style="background:var(--rl);color:var(--red);border-radius:9px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;border:none;cursor:pointer;flex-shrink:0">✕</button>
+    </div>`).join('');
+}
+function deleteTimer(id){timers=timers.filter(t=>t.id!==id);renderTimers();}
+function showTimerForm(){
+  document.getElementById('timer-form').style.display='block';
+  document.getElementById('timer-add-btn').style.display='none';
+  renderColorPickers();
+  document.getElementById('t-label').focus();
+}
+function hideTimerForm(){document.getElementById('timer-form').style.display='none';document.getElementById('timer-add-btn').style.display='flex';}
+function renderColorPickers(){
+  document.getElementById('color-pickers').innerHTML=TIMER_COLS.map((c,i)=>`<button onclick="selectedColorIdx=${i};renderColorPickers()" style="width:28px;height:28px;border-radius:50%;background:${c.color};border:none;cursor:pointer;outline:${i===selectedColorIdx?`3px solid ${c.color}`:'none'};outline-offset:2px"></button>`).join('');
+}
+function addTimer(){
+  const label=document.getElementById('t-label').value.trim();
+  const note=document.getElementById('t-note').value;
+  const time=document.getElementById('t-time').value.trim();
+  if(!label||!time)return;
+  const c=TIMER_COLS[selectedColorIdx];
+  timers.push({id:Date.now(),label,note,time,color:c.color,bg:c.bg});
+  document.getElementById('t-label').value='';document.getElementById('t-note').value='';document.getElementById('t-time').value='';
+  hideTimerForm();renderTimers();
+}
+
+/* ── INIT ── */
+renderHome();
+renderScan();
+renderFamily('overview');
+renderTimers();
+renderRecipes();
+</script>
+</body>
+</html>
