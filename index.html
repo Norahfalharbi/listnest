@@ -82,11 +82,10 @@ input.field{width:100%;border:1px solid var(--bd);border-radius:8px;padding:8px 
       <div class="scroller">
         <!-- Stats -->
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="stats-row"></div>
-        <!-- Shop & Earn Banner -->
+        <!-- Shop Banner -->
         <button onclick="nav('shop')" style="width:100%;background:linear-gradient(120deg,#0F6E56,#1D9E75,#5DCAA5);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;border:none;cursor:pointer;text-align:left">
           <div style="flex:1">
-            <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#fff">Shop &amp; Earn Cashback</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">Shop at Panda, Carrefour &amp; more — earn up to 5% back</div>
+            <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#fff">Shop at Panda</div>
           </div>
           <div style="background:rgba(255,255,255,.2);border-radius:99px;padding:5px 10px;color:#fff;font-size:12px;font-weight:700;flex-shrink:0">→</div>
         </button>
@@ -227,45 +226,17 @@ input.field{width:100%;border:1px solid var(--bd);border-radius:8px;padding:8px 
     <!-- SHOP & EARN -->
     <div class="screen" id="s-shop">
       <div class="gheader" style="padding:0">
-        <!-- Hero -->
-        <div style="background:linear-gradient(160deg,#1D9E75,#0F6E56);padding:16px 20px 0">
+        <div style="background:linear-gradient(160deg,#1D9E75,#0F6E56);padding:16px 20px 18px">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
             <div style="width:32px;height:32px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${storeLogo('Panda',30)}</div>
-            <div style="font-size:20px;font-weight:800;font-family:'Nunito',sans-serif">Shop &amp; Earn</div>
+            <div style="font-size:20px;font-weight:800;font-family:'Nunito',sans-serif">Shop at Panda</div>
           </div>
-          <div style="font-size:12px;opacity:.8;margin-top:2px;margin-bottom:14px">Buy through partners, earn cashback automatically</div>
-          <!-- Cashback balance card -->
-          <div style="background:rgba(255,255,255,.15);border-radius:16px 16px 0 0;padding:14px 16px;border:1px solid rgba(255,255,255,.2);border-bottom:none">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div>
-                <div style="font-size:11px;opacity:.75">Your Cashback Balance</div>
-                <div style="font-size:28px;font-weight:900;font-family:'Nunito',sans-serif" id="cb-balance">SAR 23.75</div>
-                <div style="font-size:10px;opacity:.7;margin-top:2px">Earned from 12 orders</div>
-              </div>
-              <button onclick="redeemCashback()" style="background:#fff;color:var(--gd);border:none;border-radius:12px;padding:10px 16px;font-weight:800;font-size:12px;font-family:'Nunito',sans-serif;cursor:pointer">Redeem</button>
-            </div>
-          </div>
+          <div style="font-size:12px;opacity:.8;margin-top:2px">Browse and order from Panda</div>
         </div>
       </div>
       <div class="scroller">
-        <!-- Partner filter tabs -->
-        <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
-          <button class="ptab active" onclick="filterPartners('all',this)">All</button>
-          <button class="ptab" onclick="filterPartners('grocery',this)">Grocery</button>
-          <button class="ptab" onclick="filterPartners('organic',this)">Organic</button>
-          <button class="ptab" onclick="filterPartners('express',this)">Express</button>
-        </div>
-        <style>
-          .ptab{padding:5px 14px;border-radius:99px;font-size:11px;font-weight:600;background:var(--g100);color:var(--g600);border:none;cursor:pointer;transition:all .2s}
-          .ptab.active{background:var(--green);color:#fff}
-        </style>
-
         <div class="sec">Partner Supermarkets</div>
         <div id="partner-list"></div>
-
-        <!-- Recent cashback history -->
-        <div class="sec" style="margin-top:4px">Recent Cashback</div>
-        <div class="card" id="cashback-history"></div>
       </div>
     </div>
 
@@ -708,51 +679,24 @@ function storeLogo(name,size=28){
 /* ── SHOP ── */
 /* ── SHOP ── */
 const PARTNERS=[
-  {id:1,name:'Panda',emoji:'🐼',category:'grocery',cb:4,tag:'Top Partner',tagCol:'#0F6E56',tagBg:'#E1F5EE',rating:4.8,orders:'2.1k orders',delivery:'30-45 min',minOrder:50,featured:true,
-   products:[{name:'Fresh Milk 1L',price:6.5,unit:'×1'},{name:'Chicken Breast 1kg',price:36,unit:'1kg'},{name:'Brown Eggs ×12',price:15,unit:'×12'},{name:'Basmati Rice 2kg',price:20,unit:'1 bag'},{name:'Olive Oil 750ml',price:26,unit:'×1'},{name:'Greek Yogurt 500g',price:17,unit:'×2'}]},
-  {id:2,name:'Carrefour',emoji:'🏪',category:'grocery',cb:3,tag:'Popular',tagCol:'#378ADD',tagBg:'#E6F1FB',rating:4.6,orders:'3.5k orders',delivery:'45-60 min',minOrder:75,featured:false,
-   products:[{name:'Tomatoes 1kg',price:8,unit:'1kg'},{name:'Laundry Detergent',price:30,unit:'×1'},{name:'Shampoo 400ml',price:22,unit:'×1'},{name:'Bread Loaf',price:7,unit:'×1'},{name:'Cheddar Cheese 200g',price:19,unit:'×1'}]},
-  {id:3,name:'Danube',emoji:'🌿',category:'organic',cb:5,tag:'Best Cashback',tagCol:'#BA7517',tagBg:'#FAEEDA',rating:4.7,orders:'1.2k orders',delivery:'40-55 min',minOrder:60,featured:false,
-   products:[{name:'Organic Spinach 250g',price:12,unit:'bag'},{name:'Organic Tomatoes 500g',price:14,unit:'bag'},{name:'Almond Milk 1L',price:18,unit:'×1'},{name:'Organic Honey 500g',price:35,unit:'jar'}]},
-  {id:4,name:'Tamimi',emoji:'🏬',category:'grocery',cb:3.5,tag:'Reliable',tagCol:'#534AB7',tagBg:'#EEEDFE',rating:4.5,orders:'900 orders',delivery:'35-50 min',minOrder:55,featured:false,
-   products:[{name:'Fresh Orange Juice 1L',price:11,unit:'×1'},{name:'Whole Wheat Bread',price:8,unit:'×1'},{name:'Tuna Can 185g',price:9,unit:'×3'},{name:'Butter 200g',price:14,unit:'×1'}]},
-  {id:5,name:'Noon Daily',emoji:'⚡',category:'express',cb:2.5,tag:'Fast Delivery',tagCol:'#D85A30',tagBg:'#FAECE7',rating:4.4,orders:'4k orders',delivery:'15-25 min',minOrder:30,featured:false,
-   products:[{name:'Drinking Water 1.5L',price:2,unit:'×6'},{name:'Chips Assorted',price:15,unit:'×3'},{name:'Instant Noodles',price:4,unit:'×5'},{name:'Energy Drink 250ml',price:8,unit:'×4'}]},
-];
-let currentPartnerFilter='all';
-let cashbackBalance=23.75;
-const CB_HISTORY=[
-  {store:'Panda',amount:4.80,date:'Today',items:3,emoji:'🐼'},
-  {store:'Carrefour',amount:6.20,date:'Yesterday',items:5,emoji:'🏪'},
-  {store:'Danube',amount:8.75,date:'3 days ago',items:4,emoji:'🌿'},
-  {store:'Panda',amount:4.00,date:'Last week',items:2,emoji:'🐼'},
+  {id:1,name:'Panda',emoji:'🐼',category:'grocery',tag:'Official Partner',tagCol:'#0F6E56',tagBg:'#E1F5EE',rating:4.8,orders:'2.1k orders',delivery:'30-45 min',minOrder:50,featured:true,
+   products:[{name:'Fresh Milk 1L',price:6.5,unit:'×1'},{name:'Chicken Breast 1kg',price:36,unit:'1kg'},{name:'Brown Eggs ×12',price:15,unit:'×12'},{name:'Basmati Rice 2kg',price:20,unit:'1 bag'},{name:'Olive Oil 750ml',price:26,unit:'×1'},{name:'Greek Yogurt 500g',price:17,unit:'×2'},{name:'Tomatoes 1kg',price:8,unit:'1kg'},{name:'Laundry Detergent',price:30,unit:'×1'},{name:'Fresh Orange Juice 1L',price:11,unit:'×1'},{name:'Butter 200g',price:14,unit:'×1'}]},
 ];
 
 function renderShop(){
-  filterPartners(currentPartnerFilter,null,true);
-  renderCashbackHistory();
+  renderPartners();
 }
 
-function filterPartners(cat,btn,silent){
-  currentPartnerFilter=cat;
-  if(!silent){
-    document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
-    if(btn)btn.classList.add('active');
-  }
-  const filtered=cat==='all'?PARTNERS:PARTNERS.filter(p=>p.category===cat);
-  document.getElementById('partner-list').innerHTML=filtered.map(p=>`
-    <div onclick="viewPartner(${p.id})" style="background:#fff;border-radius:16px;border:1px solid var(--bd);padding:14px;margin-bottom:10px;cursor:pointer;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
-      ${p.featured?`<div style="background:linear-gradient(90deg,var(--green),var(--gm));color:#fff;font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;display:inline-block;margin-bottom:8px">⭐ Featured Partner</div>`:''}
+function renderPartners(){
+  document.getElementById('partner-list').innerHTML=PARTNERS.map(p=>{
+    return `<div onclick="viewPartner(${p.id})" style="background:#fff;border-radius:16px;border:1px solid var(--bd);padding:14px;margin-bottom:10px;cursor:pointer" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,.08)'" onmouseout="this.style.boxShadow='none'">
+      ${p.featured?'<div style="background:linear-gradient(90deg,var(--green),var(--gm));color:#fff;font-size:10px;font-weight:700;padding:4px 12px;border-radius:99px;display:inline-block;margin-bottom:8px">⭐ Official Partner</div>':''}
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-        <div style="width:64px;height:52px;border-radius:14px;background:#fff;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">${storeLogo(p.name,60)}</div>
+        <div style="width:64px;height:52px;border-radius:14px;background:#f5f5f5;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">${storeLogo(p.name,60)}</div>
         <div style="flex:1">
           <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:15px">${p.name}</div>
           <div style="font-size:11px;color:var(--g400);margin-top:2px">⭐ ${p.rating} · ${p.orders} · ${p.delivery}</div>
           <div style="margin-top:5px;display:inline-block;background:${p.tagBg};color:${p.tagCol};font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px">${p.tag}</div>
-        </div>
-        <div style="text-align:center;background:var(--gl);border-radius:12px;padding:8px 12px">
-          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;color:var(--gd)">${p.cb}%</div>
-          <div style="font-size:9px;color:var(--g400);font-weight:600">cashback</div>
         </div>
       </div>
       <div style="display:flex;gap:6px">
@@ -760,18 +704,9 @@ function filterPartners(cat,btn,silent){
         <div style="flex:1;background:var(--g50);border-radius:9px;padding:6px 10px;font-size:11px;color:var(--g600)">🛒 Min SAR ${p.minOrder}</div>
         <button onclick="event.stopPropagation();shopNow(${p.id})" style="flex:1;background:var(--green);color:#fff;border:none;border-radius:9px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer">Shop Now</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
-
-function renderCashbackHistory(){
-  document.getElementById('cashback-history').innerHTML=CB_HISTORY.map((h,i)=>`
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:${i<CB_HISTORY.length-1?'1px solid var(--bd)':'none'}">
-      <div style="width:48px;height:36px;border-radius:10px;background:#fff;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;overflow:hidden">${storeLogo(h.store,44)}</div>
-      <div style="flex:1"><div style="font-size:13px;font-weight:600">${h.store}</div><div style="font-size:11px;color:var(--g400)">${h.items} items · ${h.date}</div></div>
-      <div style="font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:var(--gd)">+SAR ${h.amount.toFixed(2)}</div>
-    </div>`).join('');
-}
-
 function viewPartner(id){
   const p=PARTNERS.find(x=>x.id===id);if(!p)return;
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -779,7 +714,6 @@ function viewPartner(id){
   let cart={};
   function cartTotal(){return Object.entries(cart).reduce((s,[k,q])=>{const pr=p.products.find(x=>x.name===k);return s+(pr?pr.price*q:0);},0);}
   function cartCount(){return Object.values(cart).reduce((s,q)=>s+q,0);}
-  function cashbackAmt(){return (cartTotal()*p.cb/100).toFixed(2);}
   function renderPartnerDetail(){
     document.getElementById('partner-detail-content').innerHTML=`
       <div style="background:linear-gradient(160deg,var(--green),var(--gd));color:#fff;padding:14px 20px 16px;flex-shrink:0">
@@ -788,9 +722,8 @@ function viewPartner(id){
           <div style="width:48px;height:36px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden">${storeLogo(p.name,44)}</div>
           <div><div style="font-weight:800;font-size:18px;font-family:'Nunito',sans-serif">${p.name}</div><div style="font-size:11px;opacity:.8">${p.delivery} · Min SAR ${p.minOrder}</div></div>
         </div>
-        <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
-          <div><div style="font-size:11px;opacity:.75">Cashback rate</div><div style="font-size:22px;font-weight:900;font-family:'Nunito',sans-serif">${p.cb}% back</div></div>
-          <div style="text-align:right"><div style="font-size:11px;opacity:.75">You'll earn</div><div style="font-size:20px;font-weight:900;font-family:'Nunito',sans-serif" id="pd-earn">SAR 0.00</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:10px 14px">
+          <div><div style="font-size:11px;opacity:.75">Delivery</div><div style="font-size:16px;font-weight:800;font-family:'Nunito',sans-serif">${p.delivery}</div></div>
         </div>
       </div>
       <div style="flex:1;overflow-y:auto;padding:14px 16px">
@@ -803,7 +736,6 @@ function viewPartner(id){
       <div id="pd-cart-bar" style="display:none;padding:12px 16px;background:#fff;border-top:1px solid var(--bd);flex-shrink:0">
         <div style="display:flex;justify-content:space-between;margin-bottom:8px">
           <span style="font-size:12px;color:var(--g600)" id="pd-cart-info">0 items</span>
-          <span style="font-size:12px;font-weight:600;color:var(--gd)" id="pd-cashback-info">Cashback: SAR 0.00</span>
         </div>
         <button onclick="placeOrder(${p.id})" style="width:100%;padding:12px;border-radius:14px;background:var(--green);color:#fff;font-weight:800;font-size:14px;font-family:'Nunito',sans-serif;border:none;cursor:pointer" id="pd-order-btn">Place Order — SAR 0.00</button>
       </div>`;
@@ -827,18 +759,15 @@ function viewPartner(id){
       </div>`;
     }).join('');
     // Update cart bar
-    const total=cartTotal();const count=cartCount();const earn=cashbackAmt();
+    const total=cartTotal();const count=cartCount();
     const bar=document.getElementById('pd-cart-bar');
     if(bar){bar.style.display=count>0?'block':'none';}
     const ci=document.getElementById('pd-cart-info');if(ci)ci.textContent=`${count} item${count!==1?'s':''}  ·  SAR ${total.toFixed(2)}`;
-    const cbi=document.getElementById('pd-cashback-info');if(cbi)cbi.textContent=`Cashback: SAR ${earn}`;
     const ob=document.getElementById('pd-order-btn');if(ob)ob.textContent=`Place Order — SAR ${total.toFixed(2)}`;
-    const earn2=document.getElementById('pd-earn');if(earn2)earn2.textContent=`SAR ${earn}`;
   }
   window._partnerCart=cart;
   window._renderPdProducts=renderPdProducts;
   window._partnerCartTotal=cartTotal;
-  window._partnerCashback=cashbackAmt;
   renderPartnerDetail();
 }
 
@@ -852,13 +781,10 @@ function adjustCart(name,pid,delta){
 
 function placeOrder(pid){
   const p=PARTNERS.find(x=>x.id===pid);if(!p)return;
-  const earn=parseFloat(window._partnerCashback());
   const total=window._partnerCartTotal();
   if(total<p.minOrder){toast(`Minimum order is SAR ${p.minOrder}`);return;}
-  cashbackBalance+=earn;
-  CB_HISTORY.unshift({store:p.name,amount:earn,date:'Just now',items:Object.keys(window._partnerCart).length,emoji:p.emoji});
   window._partnerCart={};
-  toast(`Order placed! +SAR ${earn.toFixed(2)} cashback earned 🎉`);
+  toast(`Order placed successfully! 🎉`);
   backToShop();
 }
 
@@ -867,15 +793,6 @@ function shopNow(id){viewPartner(id);}
 function backToShop(){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('s-shop').classList.add('active');
-  document.getElementById('cb-balance').textContent=`SAR ${cashbackBalance.toFixed(2)}`;
-  renderCashbackHistory();
-}
-
-function redeemCashback(){
-  if(cashbackBalance<10){toast('Minimum SAR 10 needed to redeem');return;}
-  toast(`SAR ${cashbackBalance.toFixed(2)} redeemed to your wallet! 🎉`);
-  cashbackBalance=0;
-  document.getElementById('cb-balance').textContent='SAR 0.00';
 }
 
 
